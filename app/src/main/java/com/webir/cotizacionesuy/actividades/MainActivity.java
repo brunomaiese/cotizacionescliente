@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -29,7 +30,7 @@ public class MainActivity extends AppCompatActivity {
         a.enqueue(new Callback<RespuestaCotizaciones>() {
             @Override
             public void onResponse(Call<RespuestaCotizaciones> call, Response<RespuestaCotizaciones> response) {
-                if(response.body()!=null){
+                if (response.body() != null) {
                     int i = 1;
                 }
             }
@@ -42,16 +43,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     @Override
