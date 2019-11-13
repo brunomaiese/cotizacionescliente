@@ -2,4 +2,15 @@
     <string name="app_name">CotizacionesUY</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_maps">Map</string>
+    <string-array name="monedas">
+        <item>DÓLAR</item>
+        <item>ARGENTINO</item>
+        <item>REAL</item>
+        <item>EURO</item>
+    </string-array>
+    <string-array name="acciones">
+        <item>COMPRA</item>
+        <item>VENTA</item>
+    </string-array>
+
 </resources>
