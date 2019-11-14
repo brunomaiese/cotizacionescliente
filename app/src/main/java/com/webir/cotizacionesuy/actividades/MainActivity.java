@@ -5,13 +5,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.webir.cotizacionesuy.R;
 import com.webir.cotizacionesuy.adapters.CotizacionAdapter;
+import com.webir.cotizacionesuy.adapters.CotizacionAdapter2;
 import com.webir.cotizacionesuy.dtypes.CasaCambiariaItem;
+import com.webir.cotizacionesuy.dtypes.CasaCambiariaItem2;
 import com.webir.cotizacionesuy.dtypes.RespuestaCotizaciones;
 
 import java.util.ArrayList;
@@ -23,7 +27,9 @@ public class MainActivity extends AppCompatActivity {
     private Spinner mAcciones;
     private ListView mListView;
     private CotizacionAdapter mCotizacionAdapter;
+    private CotizacionAdapter2 mCotizacionAdapter2;
     private List<CasaCambiariaItem> mCasaCambiariaItems;
+    private List<CasaCambiariaItem2> mCasaCambiariaItems2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +54,18 @@ public class MainActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.listCotizaciones);
         obtenerCotizaciones();
 
+        mMonedas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                obtenerCotizaciones();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
 
     }
 
@@ -80,8 +98,79 @@ public class MainActivity extends AppCompatActivity {
         r1.setEuroVentaGales(43.40);
         r1.setEuroVentaIndumex(43.15);
         r1.setEuroVentaSir(43.50);
-        obtenerCasaCambiariaItems(r1);
+        //obtenerCasaCambiariaItems(r1);
+        obtenerCasaCambiariaItems2(r1);
 
+    }
+
+    private void obtenerCasaCambiariaItems2(RespuestaCotizaciones r1) {
+        mCasaCambiariaItems2 = new ArrayList<>();
+        CasaCambiariaItem2 gales = new CasaCambiariaItem2();
+        gales.setNombre("Cambio Gales");
+        gales.setDistancia(r1.getDistanciaGales());
+        gales.setLatitud(r1.getLatitudGales());
+        gales.setLongitud(r1.getLongitudGales());
+
+        CasaCambiariaItem2 sir = new CasaCambiariaItem2();
+        sir.setNombre("Cambio Sir");
+        sir.setDistancia(r1.getDistanciaSir());
+        sir.setLatitud(r1.getLatitudSir());
+        sir.setLongitud(r1.getLongitudSir());
+
+        CasaCambiariaItem2 indumex = new CasaCambiariaItem2();
+        indumex.setNombre("Cambio Indumex");
+        indumex.setDistancia(r1.getDistanciaIndumex());
+        indumex.setLatitud(r1.getLatitudIndumex());
+        indumex.setLongitud(r1.getLongitudIndumex());
+
+        String moneda = mMonedas.getSelectedItem().toString();
+        gales.setMoneda(moneda);
+        indumex.setMoneda(moneda);
+        sir.setMoneda(moneda);
+        switch (moneda) {
+            case "DÓLAR": {
+                gales.setCompra(r1.getDolarCompraGales());
+                gales.setVenta(r1.getDolarVentaGales());
+                sir.setCompra(r1.getDolarCompraSir());
+                sir.setVenta(r1.getDolarVentaSir());
+                indumex.setCompra(r1.getDolarCompraIndumex());
+                indumex.setVenta(r1.getDolarVentaIndumex());
+            }
+            break;
+            case "ARGENTINO": {
+                gales.setCompra(r1.getArgentinoCompraGales());
+                gales.setVenta(r1.getArgentinoVentaGales());
+                sir.setCompra(r1.getArgentinoCompraSir());
+                sir.setVenta(r1.getArgentinoVentaSir());
+                indumex.setCompra(r1.getArgentinoCompraIndumex());
+                indumex.setVenta(r1.getArgentinoVentaIndumex());
+            }
+            break;
+            case "REAL": {
+                gales.setCompra(r1.getRealCompraGales());
+                gales.setVenta(r1.getRealVentaGales());
+                sir.setCompra(r1.getRealCompraSir());
+                sir.setVenta(r1.getRealVentaSir());
+                indumex.setCompra(r1.getRealCompraIndumex());
+                indumex.setVenta(r1.getRealVentaIndumex());
+            }
+            break;
+            case "EURO": {
+                gales.setCompra(r1.getEuroCompraGales());
+                gales.setVenta(r1.getEuroVentaGales());
+                sir.setCompra(r1.getEuroCompraSir());
+                sir.setVenta(r1.getEuroVentaSir());
+                indumex.setCompra(r1.getEuroCompraIndumex());
+                indumex.setVenta(r1.getEuroVentaIndumex());
+            }
+            break;
+        }
+        mCasaCambiariaItems2.add(gales);
+        mCasaCambiariaItems2.add(sir);
+        mCasaCambiariaItems2.add(indumex);
+        mCotizacionAdapter2 = new CotizacionAdapter2(MainActivity.this, mCasaCambiariaItems2);
+        mListView.setAdapter(mCotizacionAdapter2);
+        mCotizacionAdapter2.notifyDataSetChanged();
     }
 
     private void obtenerCasaCambiariaItems(RespuestaCotizaciones r1) {
@@ -128,11 +217,12 @@ public class MainActivity extends AppCompatActivity {
         indumex.setRealCompra(r1.getRealCompraIndumex());
         indumex.setRealVenta(r1.getRealVentaIndumex());
 
+
         mCasaCambiariaItems.add(gales);
         mCasaCambiariaItems.add(sir);
         mCasaCambiariaItems.add(indumex);
 
-        mCotizacionAdapter = new CotizacionAdapter(MainActivity.this,mCasaCambiariaItems);
+        mCotizacionAdapter = new CotizacionAdapter(MainActivity.this, mCasaCambiariaItems);
         mListView.setAdapter(mCotizacionAdapter);
         mCotizacionAdapter.notifyDataSetChanged();
     }
