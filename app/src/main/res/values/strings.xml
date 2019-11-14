@@ -9,8 +9,8 @@
         <item>EURO</item>
     </string-array>
     <string-array name="acciones">
-        <item>COMPRA</item>
         <item>VENTA</item>
+        <item>COMPRA</item>
     </string-array>
 
 </resources>

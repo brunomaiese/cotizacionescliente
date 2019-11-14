@@ -9,7 +9,7 @@ import com.webir.cotizacionesuy.R;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private static final int SPLASH_DURATION = 2 * 1000;
+    private static final int SPLASH_DURATION = 2 * 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

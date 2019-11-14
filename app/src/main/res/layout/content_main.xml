@@ -50,13 +50,13 @@
                 android:layout_height="wrap_content" />
             <RadioGroup
                 android:paddingLeft="25dp"
-                android:id="@+id/radioSex"
+                android:id="@+id/radioOrden"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" >
 
                 <RadioButton
                     android:textColor="@color/colorBlanco"
-                    android:id="@+id/radioMale"
+                    android:id="@+id/radioPrecio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Precio"
@@ -64,7 +64,7 @@
 
                 <RadioButton
                     android:textColor="@color/colorBlanco"
-                    android:id="@+id/radioFemale"
+                    android:id="@+id/radioDistancia"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Distancia" />

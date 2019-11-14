@@ -1,6 +1,10 @@
 package com.webir.cotizacionesuy.actividades;
 
+import android.app.Dialog;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -9,6 +13,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 
 import com.webir.cotizacionesuy.R;
@@ -17,8 +23,13 @@ import com.webir.cotizacionesuy.adapters.CotizacionAdapter2;
 import com.webir.cotizacionesuy.dtypes.CasaCambiariaItem;
 import com.webir.cotizacionesuy.dtypes.CasaCambiariaItem2;
 import com.webir.cotizacionesuy.dtypes.RespuestaCotizaciones;
+import com.webir.cotizacionesuy.utils.CompraComparator;
+import com.webir.cotizacionesuy.utils.DistanciaComparator;
+import com.webir.cotizacionesuy.utils.VentaComparator;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -30,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private CotizacionAdapter2 mCotizacionAdapter2;
     private List<CasaCambiariaItem> mCasaCambiariaItems;
     private List<CasaCambiariaItem2> mCasaCambiariaItems2;
+    public static Dialog mProgressDialog;
+    private RadioGroup radioGroupOrden;
+    private RadioButton radioOrden;
+    private String criterioOrden = "PRECIO";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
         mAcciones.setAdapter(spinnerArrayAdapter2);
         mListView = (ListView) findViewById(R.id.listCotizaciones);
-        obtenerCotizaciones();
 
         mMonedas.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -66,10 +80,39 @@ public class MainActivity extends AppCompatActivity {
             }
 
         });
+        mAcciones.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                obtenerCotizaciones();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+
+        });
+        radioGroupOrden = (RadioGroup) findViewById(R.id.radioOrden);
+        radioOrden = (RadioButton) radioGroupOrden.findViewById(radioGroupOrden.getCheckedRadioButtonId());
+
+        radioGroupOrden.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.radioDistancia) {
+                    criterioOrden = "DISTANCIA";
+                } else {
+                    criterioOrden = "PRECIO";
+                }
+                obtenerCotizaciones();
+            }
+        });
+        obtenerCotizaciones();
+
 
     }
 
     private void obtenerCotizaciones() {
+
+
         RespuestaCotizaciones r1 = new RespuestaCotizaciones();
         r1.setArgentinoCompraGales(0.35);
         r1.setArgentinoCompraIndumex(0.35);
@@ -77,9 +120,9 @@ public class MainActivity extends AppCompatActivity {
         r1.setArgentinoVentaGales(0.85);
         r1.setArgentinoVentaIndumex(0.85);
         r1.setArgentinoVentaSir(0.90);
-        r1.setDistanciaGales(329);
-        r1.setDistanciaIndumex(200);
-        r1.setDistanciaSir(500);
+        r1.setDistanciaGales(468.4);
+        r1.setDistanciaIndumex(442);
+        r1.setDistanciaSir(202.8);
         r1.setDolarCompraGales(36.50);
         r1.setDolarCompraIndumex(36.50);
         r1.setDolarCompraSir(36.50);
@@ -98,6 +141,13 @@ public class MainActivity extends AppCompatActivity {
         r1.setEuroVentaGales(43.40);
         r1.setEuroVentaIndumex(43.15);
         r1.setEuroVentaSir(43.50);
+        r1.setLatitudGales(-56.20557163231187);
+        r1.setLongitudGales(-34.90665589381983);
+        r1.setLatitudIndumex(-56.20582739262713);
+        r1.setLongitudIndumex(-34.906774339155675);
+        r1.setLatitudSir(-56.2082357);
+        r1.setLongitudSir(-34.9074196);
+
         //obtenerCasaCambiariaItems(r1);
         obtenerCasaCambiariaItems2(r1);
 
@@ -165,9 +215,20 @@ public class MainActivity extends AppCompatActivity {
             }
             break;
         }
+
         mCasaCambiariaItems2.add(gales);
         mCasaCambiariaItems2.add(sir);
         mCasaCambiariaItems2.add(indumex);
+        String accion = mAcciones.getSelectedItem().toString();
+        if (criterioOrden.equals("PRECIO")) {
+            if (accion.equals("VENTA")) {
+                Collections.sort(mCasaCambiariaItems2, new VentaComparator());
+            } else {
+                Collections.sort(mCasaCambiariaItems2, new CompraComparator());
+            }
+        }else{
+            Collections.sort(mCasaCambiariaItems2, new DistanciaComparator());
+        }
         mCotizacionAdapter2 = new CotizacionAdapter2(MainActivity.this, mCasaCambiariaItems2);
         mListView.setAdapter(mCotizacionAdapter2);
         mCotizacionAdapter2.notifyDataSetChanged();
@@ -248,6 +309,8 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+
 
 
       /*  Call<RespuestaCotizaciones> a = PDAService.getPDAService().prueba();
